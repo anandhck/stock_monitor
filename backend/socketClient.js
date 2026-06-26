@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { createAlert } = require('./alertStore');
 const { io } = require('socket.io-client');
 const { normalizeTickerData } = require('./normalizeTickerData');
 const { addToHistory, getHistory } = require('./history');
@@ -54,7 +55,7 @@ const startSocket = () => {
     console.log('reson for', normalizedData.symbol, ':', reson);
     console.log('history length for', normalizedData.symbol, ':', getHistory(normalizedData.symbol).length);
     if (reson) {
-      console.log(`Detection for ${normalizedData.symbol}: ${reson}`);
+      createAlert(normalizedData.symbol, reson, normalizedData.ts);
     }
   });
 };
