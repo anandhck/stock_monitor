@@ -10,9 +10,9 @@ const { updateLivestatus } = require('./burst_guard');
 const socket = io(process.env.Ticker_tier);
 
 const config = {
-  RELIANCE: { strategy: 'spike', thresholdPercent: 3, windowSec: 30 },
-  TCS: { strategy: 'movingAverage', deviationPercent: 5, sampleSize: 10 },
-  INFY: { strategy: 'spike', thresholdPercent: 2.5, windowSec: 20 }
+  RELIANCE: { strategy: 'spike', thresholdPercent: 0.1, windowSec: 30 },
+  TCS: { strategy: 'movingAverage', deviationPercent: 0.1, sampleSize: 10 },
+  INFY: { strategy: 'spike', thresholdPercent: 0.1, windowSec: 20 }
 };
 
 const runDetection = (symbol, history) =>{
@@ -60,9 +60,9 @@ const startSocket = () => {
   });
 };
 
-setInterval(() => {
-console.log('current stored alerts')
-console.log(getRecentAlerts());
-},15000)
+// setInterval(() => {
+// console.log('current stored alerts')
+// console.log(getRecentAlerts());
+// },15000)
 
 module.exports = { startSocket };
