@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { createAlert } = require('./alertStore');
+const { createAlert, getRecentAlerts } = require('./alertStore');
 const { io } = require('socket.io-client');
 const { normalizeTickerData } = require('./normalizeTickerData');
 const { addToHistory, getHistory } = require('./history');
@@ -59,5 +59,10 @@ const startSocket = () => {
     }
   });
 };
+
+setInterval(() => {
+console.log('current stored alerts')
+console.log(getRecentAlerts());
+},15000)
 
 module.exports = { startSocket };
