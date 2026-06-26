@@ -4,8 +4,8 @@ const alerts = [];
 const MAX_ALERTS = 10;
 
 const createAlert = (symbol, reason, ts) => {
-    const alertRef = 'TV-' + crypto.randomBytes(3).toString('hex').toLocaleUpperCase();
-
+const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
+const alertRef = `TV-${randomHex}`; 
     const alert ={
         alertRef,
         symbol,

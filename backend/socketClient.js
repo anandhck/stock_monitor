@@ -1,6 +1,7 @@
 require('dotenv').config();
-const { createAlert, getRecentAlerts } = require('./alertStore');
 const { io: ioClient } = require('socket.io-client');
+const axios = require('axios');
+const { createAlert, getRecentAlerts } = require('./alertStore');
 const { normalizeTickerData } = require('./normalizeTickerData');
 const { addToHistory, getHistory } = require('./history');
 const { checkSpike } = require('./spikeDetector');
@@ -16,7 +17,7 @@ const config = {
 };
 
 const runDetection = (symbol, history) =>{
-  const settings = config[symbol];
+  const settings = config[symbol] || { strategy: 'spike', thresholdPercent: 0.5, windowSec: 30 };;
   if(!settings) return null;
 
   if(settings.strategy === 'spike'){
@@ -31,9 +32,19 @@ const runDetection = (symbol, history) =>{
 }
 
 const startSocket = (io) => {
-  socket.on('connect', () => {
+  socket.on('connect', async() => {
     console.log('Connected to WebSocket server');
-    socket.emit('subscribe', Object.keys(config));
+    try{
+    const response = await axios.get('https://mock-data.tealvue.in/api/v1/symbols');
+    if(response.data && response.data.success){
+      const validSymbols = response.data.data.map(item => item.symbol);
+
+      const symbolsToSubscribe = Object.keys(config).filter(sym => validSymbols.includes(sym));
+      socket.emit('subscribe', symbolsToSubscribe);
+    }
+   
+    }catch(error){
+      console.error('Failed to resolve dynamic symbol registration:', error.message);    }
   });
 
   socket.on('connect_error', (error) => {

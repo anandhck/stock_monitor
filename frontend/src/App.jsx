@@ -1,6 +1,8 @@
 import { useState, useEffect  } from 'react'
 import './App.css'
-import { socket } from './socket';
+import { socket } from './services/socket';
+import PriceChart from './components/PriceChart';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [lastPrice, setLastPrice] = useState(null);
@@ -8,7 +10,6 @@ function App() {
 
  useEffect(()=>{
   socket.on('priceUpdate', (data)=>{
-    console.log('Price Update:', data);
     setLastPrice(data);
   })
    
@@ -27,9 +28,16 @@ function App() {
   return (
     <>
       <div>
-       <h2>Last price : {lastPrice ? `${lastPrice.symbol} - $${lastPrice.close}` : 'waiting for data'}</h2>
-       <h2>Last alert : {lastAlert ? `${lastAlert.symbol} - ${lastAlert.reson}` : 'no alerts'}</h2>
-       </div>
+      
+    <div style={{ padding: '20px', textAlign: 'center', borderBottom: '1px solid #eee' }}>
+      <h2>Last price: {lastPrice ? `${lastPrice.symbol} - ${lastPrice.close}` : 'waiting...'}</h2>
+      <h1>Last Alert: {lastAlert ? lastAlert.reason : 'No alerts yet'}</h1>
+    </div>
+
+    <main style={{ padding: '20px', width: '100%' }}>
+      <Dashboard />
+    </main>
+      </div>
     </>
   )
 }

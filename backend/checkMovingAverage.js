@@ -1,16 +1,17 @@
 
 
 const checkMovingAverage = (history, deviationPercent, sampleSize)=>{
+    console.log("moving average called", history)
     if (history.length < sampleSize) {
         return null;
     }
 
     const recent = history.slice(-sampleSize);
 
-    const sum = recent.reduce((acc, ticker) => acc + ticker.price, 0);
+    const sum = recent.reduce((acc, ticker) => acc + ticker.close, 0);
     const movingAverage = sum / sampleSize;
 
-    const latestPrice = history[recent.length - 1].price;
+    const latestPrice = history[recent.length - 1].close;
     const deviation = ((latestPrice - movingAverage) / movingAverage) * 100;
 
 
