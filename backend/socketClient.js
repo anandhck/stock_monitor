@@ -1,13 +1,13 @@
 require('dotenv').config();
 const { createAlert, getRecentAlerts } = require('./alertStore');
-const { io } = require('socket.io-client');
+const { io: ioClient } = require('socket.io-client');
 const { normalizeTickerData } = require('./normalizeTickerData');
 const { addToHistory, getHistory } = require('./history');
 const { checkSpike } = require('./spikeDetector');
 const { checkMovingAverage } = require('./checkMovingAverage');
 const { updateLivestatus } = require('./burst_guard');
 
-const socket = io(process.env.Ticker_tier);
+const socket = ioClient(process.env.Ticker_tier);
 
 const config = {
   RELIANCE: { strategy: 'spike', thresholdPercent: 0.1, windowSec: 30 },
@@ -30,7 +30,7 @@ const runDetection = (symbol, history) =>{
 
 }
 
-const startSocket = () => {
+const startSocket = (io) => {
   socket.on('connect', () => {
     console.log('Connected to WebSocket server');
     socket.emit('subscribe', Object.keys(config));
@@ -41,8 +41,12 @@ const startSocket = () => {
   });
 
   socket.on('ticker', (data) => {
+    console.log('Received ticker data:', data);
     const normalizedData = normalizeTickerData(data);
     addToHistory(normalizedData);
+
+    io.emit('priceUpdate', normalizedData);
+
     const isLive = updateLivestatus(normalizedData.symbol);
     console.log("", normalizedData.symbol, "isLive:", isLive);
 
@@ -52,17 +56,17 @@ const startSocket = () => {
     }
 
     const reson = runDetection(normalizedData.symbol, getHistory(normalizedData.symbol));
+
     console.log('reson for', normalizedData.symbol, ':', reson);
     console.log('history length for', normalizedData.symbol, ':', getHistory(normalizedData.symbol).length);
+
     if (reson) {
-      createAlert(normalizedData.symbol, reson, normalizedData.ts);
+    const alert =  createAlert(normalizedData.symbol, reson, normalizedData.ts);
+    io.emit('newAlert', alert);
     }
+
   });
 };
 
-// setInterval(() => {
-// console.log('current stored alerts')
-// console.log(getRecentAlerts());
-// },15000)
 
 module.exports = { startSocket };
