@@ -12,7 +12,6 @@ const addToHistory = (ticker) => {
     histories[ticker.symbol].shift();
   }
 
-  console.log(histories[ticker.symbol]);
 };
 
 const getHistory = (symbol) => histories[symbol] || [];
