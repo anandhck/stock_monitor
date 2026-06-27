@@ -1,7 +1,6 @@
 
 
 const checkMovingAverage = (history, deviationPercent, sampleSize)=>{
-    console.log("moving average called", history)
     if (history.length < sampleSize) {
         return null;
     }

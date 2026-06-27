@@ -6,6 +6,7 @@ const MAX_ALERTS = 10;
 const createAlert = (symbol, reason, ts) => {
 const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
 const alertRef = `TV-${randomHex}`; 
+
     const alert ={
         alertRef,
         symbol,

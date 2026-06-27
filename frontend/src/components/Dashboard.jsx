@@ -25,21 +25,29 @@ export default function Dashboard() {
 
   return (
     <>
-    
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      gap: '20px',
-      width: '100%',
-      minHeight: '400px',
-      marginTop: '30px',
-      padding: '10px'
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'row', 
+      gap: '24px',  
+      boxSizing: 'border-box',
+      height: 'calc(100vh - 120px)',
+      padding: '20px'
+    }}>
+      <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+          width: '100%',
+          marginTop: '30px',
+          padding: '10px'
     }}>
       {activeSymbols.map((symbol) => (
         <PriceChart symbol={symbol} key={symbol} />
       ))}
     </div>
     <AlertFeed />
+    </div>
+    
     </>
   );
 }

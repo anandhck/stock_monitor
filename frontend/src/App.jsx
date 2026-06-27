@@ -30,8 +30,8 @@ function App() {
       <div>
       
     <div style={{ padding: '20px', textAlign: 'center', borderBottom: '1px solid #eee' }}>
-      <h2>Last price: {lastPrice ? `${lastPrice.symbol} - ${lastPrice.close}` : 'waiting...'}</h2>
-      <h1>Last Alert: {lastAlert ? lastAlert.reason : 'No alerts yet'}</h1>
+      <h3>Last price: {lastPrice ? `${lastPrice.symbol} - ${lastPrice.close}` : 'waiting...'}</h3>
+      <h3>Last Alert: {lastAlert ? lastAlert.reason : 'No alerts yet'}</h3>
     </div>
 
     <main style={{ padding: '20px', width: '100%' }}>

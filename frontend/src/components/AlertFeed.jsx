@@ -10,6 +10,25 @@ export default function AlertFeed() {
     const [alerts, setAlerts] = useState([]);
 
     useEffect(() => {
+         async function fetchInitialAlerts() {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/alerts`, {
+          headers: { 'x-api-key': import.meta.env.VITE_ALERTS_API_KEY }
+        });
+        const json = await res.json();
+        console.log("json", json)
+        if (json.success && Array.isArray(json.alerts)) {
+          setAlerts(json.alerts.slice().reverse());
+        } else {
+          console.error('Unexpected alerts response:', json);
+        }
+      } catch (err) {
+        console.error('Failed to load initial alerts:', err);
+      }
+    }
+
+    fetchInitialAlerts();
+
         function handleNewAlert(alert) {
             setAlerts((prev) => {
                 const next = [alert, ...prev];
@@ -26,20 +45,19 @@ export default function AlertFeed() {
     }, []);
     return (
         <>
-
-            <div style={{ background: '#fff', padding: '16px', borderRadius: '8px' }}>
-                <h3>Alert Feed</h3>
-                {alerts.length === 0 && <p>No alerts yet.</p>}
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {alerts.map((alert) => (
-                        <li key={alert.alertRef} style={{ borderBottom: '1px solid #eee', padding: '8px 0' }}>
-                            <strong>{alert.symbol}</strong> — {alert.reason}
-                            <br />
-                            <small>{alert.alertRef} · {new Date(alert.timestamp).toLocaleTimeString()}</small>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+<div style={{ background: '#fff', padding: '16px', borderRadius: '8px' }}>
+      <h3>Alert Feed</h3>
+      {alerts.length === 0 && <p>No alerts yet.</p>}
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {alerts.map((alert) => (
+          <li key={alert.alertRef} style={{ borderBottom: '1px solid #eee', padding: '8px 0' }}>
+            <strong>{alert.symbol}</strong> — {alert.reason}
+            <br />
+            <small>{alert.alertRef} · {new Date(alert.timestamp).toLocaleTimeString()}</small>
+          </li>
+        ))}
+      </ul>
+    </div>
         </>
     )
 
